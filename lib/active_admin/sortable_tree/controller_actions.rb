@@ -13,7 +13,8 @@ module ActiveAdmin::SortableTree
                              :protect_root => false,
                              :collapsible => false, #hides +/- buttons
                              :start_collapsed => false,
-                             :sortable => true
+                             :sortable => true,
+                             :filter => ""
 
       # BAD BAD BAD FIXME: don't pollute original class
       @sortable_options = options

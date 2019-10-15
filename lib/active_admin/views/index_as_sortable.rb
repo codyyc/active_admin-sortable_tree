@@ -139,7 +139,7 @@ module ActiveAdmin
           end
 
           ol do
-            item.send(options[:children_method]).order(options[:sorting_attribute]).each do |c|
+            item.send(options[:children_method]).order(options[:sorting_attribute]).where("name LIKE ?", "%#{options[:filter]}%").each do |c|
               build_nested_item(c)
             end
           end if tree?
