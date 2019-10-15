@@ -13,12 +13,10 @@ module ActiveAdmin::SortableTree
                              :protect_root => false,
                              :collapsible => false, #hides +/- buttons
                              :start_collapsed => false,
-                             :sortable => true,
-                             :filter => ""
+                             :sortable => true
 
       # BAD BAD BAD FIXME: don't pollute original class
       @sortable_options = options
-
       # disable pagination
       config.paginate = false
 

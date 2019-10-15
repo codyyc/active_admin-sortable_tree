@@ -13,6 +13,7 @@ module ActiveAdmin
         @collection = @collection.sort_by do |a|
           a.send(options[:sorting_attribute]) || 1
         end
+        @filter = get_filter
 
         @resource_name = ActiveAdmin::SortableTree::Compatibility.normalized_resource_name(active_admin_config.resource_name)
 
@@ -54,6 +55,12 @@ module ActiveAdmin
       # Returns collection of roots.
       def roots_collection
         if (callable = options[:roots_collection])
+          controller.instance_exec(&callable)
+        end
+      end
+
+      def get_filter
+        if (callable = options[:filter])
           controller.instance_exec(&callable)
         end
       end
@@ -139,7 +146,7 @@ module ActiveAdmin
           end
 
           ol do
-            item.send(options[:children_method]).order(options[:sorting_attribute]).where("name LIKE ?", "%#{options[:filter]}%").each do |c|
+            item.send(options[:children_method]).order(options[:sorting_attribute]).where("name LIKE ?", "%#{@filter}%").each do |c|
               build_nested_item(c)
             end
           end if tree?
