@@ -146,8 +146,14 @@ module ActiveAdmin
           end
 
           ol do
-            item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").each do |c|
-              build_nested_item(c)
+            if @filter.present?
+              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").each do |c|
+                build_nested_item(c)
+              end
+            else
+              item.send(options[:children_method]).order(options[:sorting_attribute]).each do |c|
+                bbuild_nested_item(c)
+              end
             end
           end if tree?
         end
