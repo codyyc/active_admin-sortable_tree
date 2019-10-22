@@ -152,7 +152,7 @@ module ActiveAdmin
               end
             else
               item.send(options[:children_method]).order(options[:sorting_attribute]).each do |c|
-                bbuild_nested_item(c)
+                build_nested_item(c)
               end
             end
           end if tree?
