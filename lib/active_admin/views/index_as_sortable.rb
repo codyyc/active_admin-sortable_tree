@@ -14,6 +14,7 @@ module ActiveAdmin
           a.send(options[:sorting_attribute]) || 1
         end
         @filter = get_filter
+        @scope = get_scope
 
         @resource_name = ActiveAdmin::SortableTree::Compatibility.normalized_resource_name(active_admin_config.resource_name)
 
@@ -61,6 +62,12 @@ module ActiveAdmin
 
       def get_filter
         if (callable = options[:filter])
+          controller.instance_exec(&callable)
+        end
+      end
+
+      def get_scope
+        if (callable = options[:scope])
           controller.instance_exec(&callable)
         end
       end
@@ -146,14 +153,20 @@ module ActiveAdmin
           end
 
           ol do
+
+            prep = item.send(options[:children_method]).order(options[:sorting_attribute])
+
+            if @scope == "archived"
+              prep = prep.only_deleted
+            end
+
             if @filter.present?
-              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").each do |c|
-                build_nested_item(c)
-              end
-            else
-              item.send(options[:children_method]).order(options[:sorting_attribute]).each do |c|
-                build_nested_item(c)
-              end
+              prep = prep.where("lower(name) LIKE ?", "%#{@filter.downcase}%")
+            end 
+
+            prep.each do |c|
+              build_nested_items(c)
+            end +
             end
           end if tree?
         end
