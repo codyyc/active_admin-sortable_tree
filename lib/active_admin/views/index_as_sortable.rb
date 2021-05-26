@@ -155,7 +155,7 @@ module ActiveAdmin
           ol do
 
             if @scope_filter.present? && @scope_filter == "archived" && @filter.present?
-              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").each do |c|
+              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").only_deleted.each do |c|
                 build_nested_item(c)
               end
             elsif @scope_filter.present? && @scope_filter == "archived" 
