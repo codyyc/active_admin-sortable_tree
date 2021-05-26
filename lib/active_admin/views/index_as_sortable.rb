@@ -154,19 +154,23 @@ module ActiveAdmin
 
           ol do
 
-            prep = item.send(options[:children_method]).order(options[:sorting_attribute])
-
-            if @scope_filter == "archived"
-              prep = prep.only_deleted
+            if @scope_filter.present? && @scope_filter == "archived" && @filter.present?
+              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").only_deleted.each do |c|
+                build_nested_item(c)
+              end
+            elsif @scope_filter.present? && @scope_filter == "archived" 
+              item.send(options[:children_method]).order(options[:sorting_attribute]).only_deleted.each do |c|
+                build_nested_item(c)
+              end
+            elsif @filter.present?
+              item.send(options[:children_method]).order(options[:sorting_attribute]).where("lower(name) LIKE ?", "%#{@filter.downcase}%").each do |c|
+                build_nested_item(c)
+              end
+            else
+              item.send(options[:children_method]).order(options[:sorting_attribute]).each do |c|
+                build_nested_item(c)
+              end
             end
-
-            if @filter.present?
-              prep = prep.where("lower(name) LIKE ?", "%#{@filter.downcase}%")
-            end 
-
-            prep.each do |c|
-              build_nested_items(c)
-            end 
 
           end if tree?
         end
