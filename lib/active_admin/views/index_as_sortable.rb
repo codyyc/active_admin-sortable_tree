@@ -166,7 +166,7 @@ module ActiveAdmin
 
             prep.each do |c|
               build_nested_items(c)
-            end +
+            end 
 
           end if tree?
         end
