@@ -14,7 +14,7 @@ module ActiveAdmin
           a.send(options[:sorting_attribute]) || 1
         end
         @filter = get_filter
-        @scope = get_scope
+        @scope_filter = get_scope_filter
 
         @resource_name = ActiveAdmin::SortableTree::Compatibility.normalized_resource_name(active_admin_config.resource_name)
 
@@ -66,8 +66,8 @@ module ActiveAdmin
         end
       end
 
-      def get_scope
-        if (callable = options[:scope])
+      def get_scope_filter
+        if (callable = options[:scope_filter])
           controller.instance_exec(&callable)
         end
       end
@@ -156,7 +156,7 @@ module ActiveAdmin
 
             prep = item.send(options[:children_method]).order(options[:sorting_attribute])
 
-            if @scope == "archived"
+            if @scope_filter == "archived"
               prep = prep.only_deleted
             end
 
